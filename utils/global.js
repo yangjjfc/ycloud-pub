@@ -11,9 +11,8 @@ const global = {
      * 生成配置文件
      * @param {*读取路劲} path 
      * @param {*目标项目,数组} target 
-     * @param {*配置} map 
      */
-    generateConfig: (path, target, map) => {
+    generateConfig: (path, target) => {
         let files = fs.readdirSync(path);
         let config = [];
         files.forEach(element => {
@@ -24,29 +23,23 @@ const global = {
                     throws: false
                 });
                 if (json && (!target.length || target.includes(json.name))) {
-                    map.imports[json.name] = json[json.name];
                     config.push(json);
                 }
             }
         });
-        return [config, map];
+        return [config];
     },
     /**
      * 配置
      * @param {目标项目} dir 
      * @param {配置} config 
-     * @param {*} map 
      */
-    wirteConfig: (path, dir, config, map) => {
+    wirteConfig: (path, dir, config) => {
         fs.writeFileSync(
             trasPath(`${path}/${dir}/project.js`),
-            `define(function (){return {projects: ${JSON.stringify(config)}};})`, {
+            `${JSON.stringify(config)}`, {
                 encoding: "utf-8"
             }
-        );
-        fs.writeFileSync(
-            trasPath(`${path}/${dir}/map.json`),
-            JSON.stringify(map, null, 4)
         );
         console.log("项目配置文件生成");
     },
@@ -55,11 +48,11 @@ const global = {
      * @param {目标项目} dir 
      * @param {*} config 
      */
-    generate: (path, dir, config,map) => {
+    generate: (path, dir, config) => {
         if (!fs.existsSync(trasPath(`${path}/${dir}`))) {
             fs.mkdirSync(`${path}/${dir}`);
         }
-        global.wirteConfig(path, dir, config, map);
+        global.wirteConfig(path, dir, config);
         config.forEach(item => {
             copy(
                 trasPath(`${path}/${item.name}/dist`),
@@ -67,7 +60,7 @@ const global = {
             );
         });
         copy(`${path}/protal/dist`, `${path}/${dir}/protal`);
-        console.log("项目文件已经重新生成");
+        console.log(">>>>>>>>项目文件已经重新生成!!<<<<<<<<<");
     }
 }
 

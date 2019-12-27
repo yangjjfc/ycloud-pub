@@ -81,7 +81,7 @@ const copy = (src, dist) => {
       copyDir(src, dist);
       break;
     default:
-      throw src + "文件不存在或无法识别改文件";
+      console.log(src+"文件不存在或无法识别改文件,请先执行yarn build 进行打包");
       break;
   }
 };
